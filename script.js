@@ -66,74 +66,58 @@ function showMainContainer() {
   }
 }
 
-// Function to call Google Script using fetch
+// Function to call Google Script using JSONP
 function callGoogleScript(functionName, params, callback) {
   console.log('Calling Google Script:', functionName, params);
   
-  // Create a form data object
-  const formData = new FormData();
-  formData.append('function', functionName);
-  formData.append('params', JSON.stringify(params));
+  // Create a unique callback function name
+  const callbackName = 'callback_' + Math.floor(Math.random() * 1000000);
   
-  // Show loading message if it's a login request
-  if (functionName === 'authenticateUser') {
-    $('#login-message').html('<div class="alert alert-info">Processing request...</div>');
-  }
+  // Create a script element
+  const script = document.createElement('script');
   
-  // Send the request
-  fetch(WEB_APP_URL, {
-    method: 'POST',
-    body: formData,
-    mode: 'cors'
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.text();
-  })
-  .then(data => {
-    console.log('Response from Google Script:', data);
+  // Set up the callback function
+  window[callbackName] = function(response) {
+    console.log('Response from Google Script:', response);
     
-    try {
-      const parsedData = JSON.parse(data);
-      
-      if (parsedData.error) {
-        console.error('Error from Google Script:', parsedData.error);
-        if (functionName === 'authenticateUser') {
-          $('#login-message').html('<div class="alert alert-danger">Error: ' + parsedData.error + '</div>');
-        } else {
-          alert('Error: ' + parsedData.error);
-        }
-      } else {
-        callback(parsedData);
-      }
-    } catch (error) {
-      console.error('Error parsing response:', error);
+    if (response.error) {
+      console.error('Error from Google Script:', response.error);
       if (functionName === 'authenticateUser') {
-        $('#login-message').html('<div class="alert alert-danger">An error occurred. Please try again.</div>');
+        $('#login-message').html('<div class="alert alert-danger">Error: ' + response.error + '</div>');
       } else {
-        alert('An error occurred. Please try again.');
+        alert('Error: ' + response.error);
+      }
+    } else {
+      callback(response);
+    }
+    
+    // Clean up
+    delete window[callbackName];
+    document.body.removeChild(script);
+  };
+  
+  // Build the URL
+  const url = WEB_APP_URL + '?function=' + encodeURIComponent(functionName) + 
+               '&params=' + encodeURIComponent(JSON.stringify(params)) + 
+               '&callback=' + encodeURIComponent(callbackName);
+  
+  // Set the script source
+  script.src = url;
+  
+  // Add the script to the document
+  document.body.appendChild(script);
+  
+  // Set a timeout in case we don't get a response
+  setTimeout(function() {
+    if (window[callbackName]) {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      console.warn('No response received from Google Script');
+      if (functionName === 'authenticateUser') {
+        $('#login-message').html('<div class="alert alert-warning">No response from server. Please try again.</div>');
+      } else {
+        alert('No response from server. Please try again.');
       }
     }
-  })
-  .catch(error => {
-    console.error('Fetch error:', error);
-    if (functionName === 'authenticateUser') {
-      $('#login-message').html('<div class="alert alert-danger">Network error. Please check your connection and try again.</div>');
-    } else {
-      alert('Network error. Please check your connection and try again.');
-    }
-  });
-}
-function testConnection() {
-  $('#login-message').html('<div class="alert alert-info">Testing connection...</div>');
-  
-  callGoogleScript('testFunction', [], function(result) {
-    if (result.message) {
-      $('#login-message').html('<div class="alert alert-success">Connection successful: ' + result.message + '</div>');
-    } else {
-      $('#login-message').html('<div class="alert alert-danger">Connection test failed</div>');
-    }
-  });
+  }, 15000); // 15 seconds timeout
 }
