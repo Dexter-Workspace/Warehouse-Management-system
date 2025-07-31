@@ -102,16 +102,26 @@ $('#add-item-form').submit(function(e) {
   const quantity = parseInt($('#item-quantity').val());
   const unitPrice = parseFloat($('#item-price').val());
   
+  // Validate inputs
+  if (!itemId || !itemName || isNaN(quantity) || isNaN(unitPrice)) {
+    alert('Please fill in all fields with valid values');
+    return;
+  }
+  
   // Create a properly formatted array
   const itemData = [currentCompany, itemId, itemName, quantity, unitPrice];
   
+  console.log('Sending item data:', itemData);
+  
   callGoogleScript('addInventoryItem', itemData, function(result) {
+    console.log('Received result:', result);
     alert(result);
     $('#add-item-modal').modal('hide');
     $('#add-item-form')[0].reset();
     loadInventoryData();
   });
 });
+
 
   // Add stock out form submission
 $('#add-stock-out-form').submit(function(e) {
@@ -787,6 +797,8 @@ function callGoogleScript(functionName, params, callback) {
                '&params=' + encodeURIComponent(JSON.stringify(params)) + 
                '&callback=' + encodeURIComponent(callbackName);
   
+  console.log('Request URL:', url);
+  
   // Set the script source
   script.src = url;
   
@@ -807,4 +819,3 @@ function callGoogleScript(functionName, params, callback) {
     }
   }, 15000); // 15 seconds timeout
 }
-
