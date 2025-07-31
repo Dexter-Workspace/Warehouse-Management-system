@@ -585,34 +585,148 @@ function loadUserData() {
 
 // Add inventory item
 function addInventoryItem() {
-  $('#add-item-modal').modal('show');
+  const modal = $('#add-item-modal');
+  
+  // Reset the form
+  $('#add-item-form')[0].reset();
+  
+  // Show the modal
+  modal.modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+  
+  // Set focus to the first input when modal opens
+  modal.on('shown.bs.modal', function () {
+    $('#item-id').focus();
+  });
+  
+  // Hide the modal when it's closed
+  modal.on('hidden.bs.modal', function () {
+    modal.removeAttr('tabindex').removeAttr('role').removeAttr('aria-labelledby').removeAttr('aria-hidden');
+  });
 }
 
 // Add stock out entry
 function addStockOutEntry() {
-  $('#add-stock-out-modal').modal('show');
+  const modal = $('#add-stock-out-modal');
+  
+  // Reset the form
+  $('#add-stock-out-form')[0].reset();
+  
+  // Show the modal
+  modal.modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+  
+  // Set focus to the first input when modal opens
+  modal.on('shown.bs.modal', function () {
+    $('#stock-out-order-id').focus();
+  });
+  
+  // Hide the modal when it's closed
+  modal.on('hidden.bs.modal', function () {
+    modal.removeAttr('tabindex').removeAttr('role').removeAttr('aria-labelledby').removeAttr('aria-hidden');
+  });
 }
 
 // Add sales order
 function addSalesOrder() {
-  $('#add-sales-order-modal').modal('show');
+  const modal = $('#add-sales-order-modal');
+  
+  // Reset the form
+  $('#add-sales-order-form')[0].reset();
+  
+  // Show the modal
+  modal.modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+  
+  // Set focus to the first input when modal opens
+  modal.on('shown.bs.modal', function () {
+    $('#sales-order-order-id').focus();
+  });
+  
+  // Hide the modal when it's closed
+  modal.on('hidden.bs.modal', function () {
+    modal.removeAttr('tabindex').removeAttr('role').removeAttr('aria-labelledby').removeAttr('aria-hidden');
+  });
 }
 
 // Add purchase entry
 function addPurchaseEntry() {
-  $('#add-purchase-modal').modal('show');
+  const modal = $('#add-purchase-modal');
+  
+  // Reset the form
+  $('#add-purchase-form')[0].reset();
+  
+  // Show the modal
+  modal.modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+  
+  // Set focus to the first input when modal opens
+  modal.on('shown.bs.modal', function () {
+    $('#purchase-order-id').focus();
+  });
+  
+  // Hide the modal when it's closed
+  modal.on('hidden.bs.modal', function () {
+    modal.removeAttr('tabindex').removeAttr('role').removeAttr('aria-labelledby').removeAttr('aria-hidden');
+  });
 }
 
 // Add user
 function addUser() {
-  $('#add-user-modal').modal('show');
+  const modal = $('#add-user-modal');
+  
+  // Reset the form
+  $('#add-user-form')[0].reset();
+  
+  // Show the modal
+  modal.modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+  
+  // Set focus to the first input when modal opens
+  modal.on('shown.bs.modal', function () {
+    $('#add-user-username').focus();
+  });
+  
+  // Hide the modal when it's closed
+  modal.on('hidden.bs.modal', function () {
+    modal.removeAttr('tabindex').removeAttr('role').removeAttr('aria-labelledby').removeAttr('aria-hidden');
+  });
 }
+
 
 // Update status
 function updateStatus(orderId, orderType) {
+  const modal = $('#update-status-modal');
+  
+  // Set the order ID and type
   $('#update-order-id').val(orderId);
   $('#update-order-type').val(orderType);
-  $('#update-status-modal').modal('show');
+  
+  // Show the modal
+  modal.modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+  
+  // Set focus to the status dropdown when modal opens
+  modal.on('shown.bs.modal', function () {
+    $('#new-status').focus();
+  });
+  
+  // Hide the modal when it's closed
+  modal.on('hidden.bs.modal', function () {
+    modal.removeAttr('tabindex').removeAttr('role').removeAttr('aria-labelledby').removeAttr('aria-hidden');
+  });
 }
 
 // Delete user

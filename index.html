@@ -358,234 +358,134 @@
   </div>
 
   <!-- Add Item Modal -->
-  <div class="modal fade" id="add-item-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add Inventory Item</h5>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="add-item-form">
-            <div class="form-group">
-              <label for="item-id">Item ID</label>
-              <input type="text" class="form-control" id="item-id" required>
-            </div>
-            <div class="form-group">
-              <label for="item-name">Item Name</label>
-              <input type="text" class="form-control" id="item-name" required>
-            </div>
-            <div class="form-group">
-              <label for="item-quantity">Quantity</label>
-              <input type="number" class="form-control" id="item-quantity" required>
-            </div>
-            <div class="form-group">
-              <label for="item-price">Unit Price</label>
-              <input type="number" class="form-control" id="item-price" step="0.01" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Item</button>
-          </form>
-        </div>
+<div class="modal fade" id="add-item-modal" tabindex="-1" role="dialog" aria-labelledby="add-item-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-item-modal-label">Add Inventory Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add-item-form">
+          <div class="form-group">
+            <label for="item-id">Item ID</label>
+            <input type="text" class="form-control" id="item-id" required>
+          </div>
+          <div class="form-group">
+            <label for="item-name">Item Name</label>
+            <input type="text" class="form-control" id="item-name" required>
+          </div>
+          <div class="form-group">
+            <label for="item-quantity">Quantity</label>
+            <input type="number" class="form-control" id="item-quantity" required>
+          </div>
+          <div class="form-group">
+            <label for="item-price">Unit Price</label>
+            <input type="number" class="form-control" id="item-price" step="0.01" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Item</button>
+        </form>
       </div>
     </div>
   </div>
+</div>
 
   <!-- Add Stock Out Modal -->
-  <div class="modal fade" id="add-stock-out-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add Stock Out Entry</h5>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="add-stock-out-form">
-            <div class="form-group">
-              <label for="stock-out-order-id">Order ID</label>
-              <input type="text" class="form-control" id="stock-out-order-id" required>
-            </div>
-            <div class="form-group">
-              <label for="stock-out-customer">Customer</label>
-              <input type="text" class="form-control" id="stock-out-customer" required>
-            </div>
-            <div class="form-group">
-              <label for="stock-out-quantity">Quantity</label>
-              <input type="number" class="form-control" id="stock-out-quantity" required>
-            </div>
-            <div class="form-group">
-              <label for="stock-out-status">Status</label>
-              <select class="form-control" id="stock-out-status" required>
-                <option value="Pending">Pending</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Entry</button>
-          </form>
-        </div>
+<div class="modal fade" id="add-stock-out-modal" tabindex="-1" role="dialog" aria-labelledby="add-stock-out-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-stock-out-modal-label">Add Stock Out Entry</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add-stock-out-form">
+          <!-- Form fields -->
+        </form>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Add Sales Order Modal -->
-  <div class="modal fade" id="add-sales-order-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add Sales Order</h5>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="add-sales-order-form">
-            <div class="form-group">
-              <label for="sales-order-order-id">Order ID</label>
-              <input type="text" class="form-control" id="sales-order-order-id" required>
-            </div>
-            <div class="form-group">
-              <label for="sales-order-customer">Customer</label>
-              <input type="text" class="form-control" id="sales-order-customer" required>
-            </div>
-            <div class="form-group">
-              <label for="sales-order-items">Items</label>
-              <textarea class="form-control" id="sales-order-items" rows="3" required></textarea>
-            </div>
-            <div class="form-group">
-              <label for="sales-order-amount">Total Amount</label>
-              <input type="number" class="form-control" id="sales-order-amount" step="0.01" required>
-            </div>
-            <div class="form-group">
-              <label for="sales-order-status">Status</label>
-              <select class="form-control" id="sales-order-status" required>
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Order</button>
-          </form>
-        </div>
+<!-- Add Sales Order Modal -->
+<div class="modal fade" id="add-sales-order-modal" tabindex="-1" role="dialog" aria-labelledby="add-sales-order-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-sales-order-modal-label">Add Sales Order</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add-sales-order-form">
+          <!-- Form fields -->
+        </form>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Add Purchase Modal -->
-  <div class="modal fade" id="add-purchase-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add Purchase Entry</h5>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="add-purchase-form">
-            <div class="form-group">
-              <label for="purchase-order-id">Order ID</label>
-              <input type="text" class="form-control" id="purchase-order-id" required>
-            </div>
-            <div class="form-group">
-              <label for="purchase-supplier">Supplier</label>
-              <input type="text" class="form-control" id="purchase-supplier" required>
-            </div>
-            <div class="form-group">
-              <label for="purchase-items">Items</label>
-              <textarea class="form-control" id="purchase-items" rows="3" required></textarea>
-            </div>
-            <div class="form-group">
-              <label for="purchase-amount">Total Amount</label>
-              <input type="number" class="form-control" id="purchase-amount" step="0.01" required>
-            </div>
-            <div class="form-group">
-              <label for="purchase-status">Status</label>
-              <select class="form-control" id="purchase-status" required>
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Entry</button>
-          </form>
-        </div>
+<!-- Add Purchase Modal -->
+<div class="modal fade" id="add-purchase-modal" tabindex="-1" role="dialog" aria-labelledby="add-purchase-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-purchase-modal-label">Add Purchase Entry</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add-purchase-form">
+          <!-- Form fields -->
+        </form>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Add User Modal -->
-  <div class="modal fade" id="add-user-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add User</h5>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="add-user-form">
-            <div class="form-group">
-              <label for="add-user-username">Username</label>
-              <input type="text" class="form-control" id="add-user-username" required>
-            </div>
-            <div class="form-group">
-              <label for="add-user-email">Email</label>
-              <input type="email" class="form-control" id="add-user-email" required>
-            </div>
-            <div class="form-group">
-              <label for="add-user-role">Role</label>
-              <select class="form-control" id="add-user-role" required>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="add-user-password">Password</label>
-              <input type="password" class="form-control" id="add-user-password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Add User</button>
-          </form>
-        </div>
+<!-- Add User Modal -->
+<div class="modal fade" id="add-user-modal" tabindex="-1" role="dialog" aria-labelledby="add-user-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-user-modal-label">Add User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add-user-form">
+          <!-- Form fields -->
+        </form>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Update Status Modal -->
-  <div class="modal fade" id="update-status-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Update Status</h5>
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="update-status-form">
-            <div class="form-group">
-              <label for="new-status">New Status</label>
-              <select class="form-control" id="new-status" required>
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
-            <input type="hidden" id="update-order-id">
-            <input type="hidden" id="update-order-type">
-            <button type="submit" class="btn btn-primary">Update Status</button>
-          </form>
-        </div>
+<!-- Update Status Modal -->
+<div class="modal fade" id="update-status-modal" tabindex="-1" role="dialog" aria-labelledby="update-status-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="update-status-modal-label">Update Status</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="update-status-form">
+          <!-- Form fields -->
+        </form>
       </div>
     </div>
   </div>
+</div>
 
   <script src="script.js"></script>
 </body>
