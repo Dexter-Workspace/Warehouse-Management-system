@@ -52,6 +52,194 @@ $(document).ready(function() {
     localStorage.removeItem('currentCompany');
     location.reload();
   });
+
+  // Navigation link clicks
+  $('#dashboard-link').click(function() {
+    showSection('dashboard');
+    loadDashboard();
+  });
+
+  $('#inventory-link').click(function() {
+    showSection('inventory');
+    loadInventoryData();
+  });
+
+  $('#stock-out-link').click(function() {
+    showSection('stock-out');
+    loadStockOutData();
+  });
+
+  $('#sales-order-link').click(function() {
+    showSection('sales-order');
+    loadSalesOrderData();
+  });
+
+  $('#purchase-link').click(function() {
+    showSection('purchase');
+    loadPurchaseData();
+  });
+
+  $('#forecast-link').click(function() {
+    showSection('forecast');
+    loadForecastData();
+  });
+
+  $('#settings-link').click(function() {
+    showSection('settings');
+    loadSettingsData();
+  });
+
+  $('#users-link').click(function() {
+    showSection('users');
+    loadUserData();
+  });
+
+  // Add item form submission
+  $('#add-item-form').submit(function(e) {
+    e.preventDefault();
+    const itemId = $('#item-id').val();
+    const itemName = $('#item-name').val();
+    const quantity = parseInt($('#item-quantity').val());
+    const unitPrice = parseFloat($('#item-price').val());
+    
+    callGoogleScript('addInventoryItem', [currentCompany, itemId, itemName, quantity, unitPrice], function(result) {
+      alert(result);
+      $('#add-item-modal').modal('hide');
+      $('#add-item-form')[0].reset();
+      loadInventoryData();
+    });
+  });
+
+  // Add stock out form submission
+  $('#add-stock-out-form').submit(function(e) {
+    e.preventDefault();
+    const orderId = $('#stock-out-order-id').val();
+    const customer = $('#stock-out-customer').val();
+    const quantity = parseInt($('#stock-out-quantity').val());
+    const status = $('#stock-out-status').val();
+    
+    callGoogleScript('addStockOutEntry', [currentCompany, orderId, customer, quantity, status], function(result) {
+      alert(result);
+      $('#add-stock-out-modal').modal('hide');
+      $('#add-stock-out-form')[0].reset();
+      loadStockOutData();
+    });
+  });
+
+  // Add sales order form submission
+  $('#add-sales-order-form').submit(function(e) {
+    e.preventDefault();
+    const orderId = $('#sales-order-order-id').val();
+    const customer = $('#sales-order-customer').val();
+    const items = $('#sales-order-items').val();
+    const totalAmount = parseFloat($('#sales-order-amount').val());
+    const status = $('#sales-order-status').val();
+    
+    callGoogleScript('addSalesOrder', [currentCompany, orderId, customer, items, totalAmount, status], function(result) {
+      alert(result);
+      $('#add-sales-order-modal').modal('hide');
+      $('#add-sales-order-form')[0].reset();
+      loadSalesOrderData();
+    });
+  });
+
+  // Add purchase form submission
+  $('#add-purchase-form').submit(function(e) {
+    e.preventDefault();
+    const orderId = $('#purchase-order-id').val();
+    const supplier = $('#purchase-supplier').val();
+    const items = $('#purchase-items').val();
+    const totalAmount = parseFloat($('#purchase-amount').val());
+    const status = $('#purchase-status').val();
+    
+    callGoogleScript('addPurchaseEntry', [currentCompany, orderId, supplier, items, totalAmount, status], function(result) {
+      alert(result);
+      $('#add-purchase-modal').modal('hide');
+      $('#add-purchase-form')[0].reset();
+      loadPurchaseData();
+    });
+  });
+
+  // Add user form submission
+  $('#add-user-form').submit(function(e) {
+    e.preventDefault();
+    const username = $('#add-user-username').val();
+    const email = $('#add-user-email').val();
+    const role = $('#add-user-role').val();
+    const password = $('#add-user-password').val();
+    
+    callGoogleScript('addUser', [username, email, role, password], function(result) {
+      alert(result);
+      $('#add-user-modal').modal('hide');
+      $('#add-user-form')[0].reset();
+      loadUserData();
+    });
+  });
+
+  // Update status form submission
+  $('#update-status-form').submit(function(e) {
+    e.preventDefault();
+    const orderId = $('#update-order-id').val();
+    const newStatus = $('#new-status').val();
+    const orderType = $('#update-order-type').val();
+    
+    if (orderType === 'stock-out') {
+      callGoogleScript('updateStockOutStatus', [orderId, newStatus], function(result) {
+        alert(result);
+        $('#update-status-modal').modal('hide');
+        loadStockOutData();
+      });
+    } else if (orderType === 'sales-order') {
+      callGoogleScript('updateSalesOrderStatus', [orderId, newStatus], function(result) {
+        alert(result);
+        $('#update-status-modal').modal('hide');
+        loadSalesOrderData();
+      });
+    } else if (orderType === 'purchase') {
+      callGoogleScript('updatePurchaseStatus', [orderId, newStatus], function(result) {
+        alert(result);
+        $('#update-status-modal').modal('hide');
+        loadPurchaseData();
+      });
+    }
+  });
+
+  // Settings form submission
+  $('#settings-form').submit(function(e) {
+    e.preventDefault();
+    const settings = [
+      ['orderNotification', $('#order-notification').prop('checked')],
+      ['stockNotification', $('#stock-notification').prop('checked')],
+      ['lowStockNotification', $('#low-stock-notification').prop('checked')],
+      ['lowStockThreshold', parseInt($('#low-stock-threshold').val())],
+      ['currency', $('#currency').val()]
+    ];
+    
+    callGoogleScript('updateSettings', [settings], function(result) {
+      alert(result);
+    });
+  });
+
+  // Search functionality
+  $('#inventory-search').on('keyup', function() {
+    $('#inventory-table').DataTable().search(this.value).draw();
+  });
+
+  $('#stock-out-search').on('keyup', function() {
+    $('#stock-out-table').DataTable().search(this.value).draw();
+  });
+
+  $('#sales-order-search').on('keyup', function() {
+    $('#sales-order-table').DataTable().search(this.value).draw();
+  });
+
+  $('#purchase-search').on('keyup', function() {
+    $('#purchase-table').DataTable().search(this.value).draw();
+  });
+
+  $('#forecast-search').on('keyup', function() {
+    $('#forecast-table').DataTable().search(this.value).draw();
+  });
 });
 
 // Show main container
@@ -64,6 +252,341 @@ function showMainContainer() {
   if (userRole !== 'admin') {
     $('#users-link').parent().hide();
   }
+}
+
+// Show section
+function showSection(section) {
+  $('.content-section').hide();
+  $('#' + section + '-content').show();
+  $('.nav-link').removeClass('active');
+  $('#' + section + '-link').addClass('active');
+}
+
+// Switch company
+function switchCompany(company) {
+  currentCompany = company;
+  localStorage.setItem('currentCompany', currentCompany);
+  $('#current-company').text(currentCompany);
+  loadDashboard();
+}
+
+// Load dashboard data
+function loadDashboard() {
+  callGoogleScript('getDashboardData', [currentCompany], function(data) {
+    $('#inventory-value').text(data.inventoryValue.toFixed(2));
+    $('#stock-out-value').text(data.totalStockOut);
+    $('#sales-orders-value').text(data.pendingSalesOrders);
+    $('#purchase-orders-value').text(data.pendingPurchaseOrders);
+    
+    // Load charts
+    loadStockChart();
+    loadInventoryChart();
+    
+    // Load recent activities
+    callGoogleScript('getRecentActivities', [currentCompany], function(activities) {
+      const activitiesHtml = activities.map(activity => `
+        <div class="activity-item">
+          <small class="text-muted">${new Date(activity.timestamp).toLocaleString()}</small>
+          <p>${activity.description}</p>
+        </div>
+      `).join('');
+      
+      $('#recent-activities').html(activitiesHtml);
+    });
+  });
+}
+
+// Load stock chart
+function loadStockChart() {
+  const ctx = document.getElementById('stock-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [{
+        label: 'Stock In',
+        data: [65, 59, 80, 81, 56, 55],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }, {
+        label: 'Stock Out',
+        data: [28, 48, 40, 19, 86, 27],
+        fill: false,
+        borderColor: 'rgb(255, 99, 132)',
+        tension: 0.1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+// Load inventory chart
+function loadInventoryChart() {
+  const ctx = document.getElementById('inventory-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['In Stock', 'Low Stock', 'Out of Stock'],
+      datasets: [{
+        data: [300, 50, 10],
+        backgroundColor: [
+          'rgb(75, 192, 192)',
+          'rgb(255, 205, 86)',
+          'rgb(255, 99, 132)'
+        ]
+      }]
+    },
+    options: {}
+  });
+}
+
+// Load inventory data
+function loadInventoryData() {
+  callGoogleScript('getInventoryData', [currentCompany], function(data) {
+    const inventoryTable = $('#inventory-table tbody');
+    inventoryTable.empty();
+    data.forEach(function(row) {
+      inventoryTable.append(`
+        <tr>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>${new Date(row[6]).toLocaleString()}</td>
+        </tr>
+      `);
+    });
+    
+    // Initialize DataTable
+    if ($.fn.DataTable.isDataTable('#inventory-table')) {
+      $('#inventory-table').DataTable().destroy();
+    }
+    $('#inventory-table').DataTable();
+  });
+}
+
+// Load stock out data
+function loadStockOutData() {
+  callGoogleScript('getStockOutData', [currentCompany], function(data) {
+    const stockOutTable = $('#stock-out-table tbody');
+    stockOutTable.empty();
+    data.forEach(function(row) {
+      stockOutTable.append(`
+        <tr>
+          <td>${new Date(row[1]).toLocaleDateString()}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="updateStatus('${row[2]}', 'stock-out')">Update Status</button>
+          </td>
+        </tr>
+      `);
+    });
+    
+    // Initialize DataTable
+    if ($.fn.DataTable.isDataTable('#stock-out-table')) {
+      $('#stock-out-table').DataTable().destroy();
+    }
+    $('#stock-out-table').DataTable();
+  });
+}
+
+// Load sales order data
+function loadSalesOrderData() {
+  callGoogleScript('getSalesOrderData', [currentCompany], function(data) {
+    const salesOrderTable = $('#sales-order-table tbody');
+    salesOrderTable.empty();
+    data.forEach(function(row) {
+      salesOrderTable.append(`
+        <tr>
+          <td>${new Date(row[1]).toLocaleDateString()}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>${row[6]}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="updateStatus('${row[2]}', 'sales-order')">Update Status</button>
+          </td>
+        </tr>
+      `);
+    });
+    
+    // Initialize DataTable
+    if ($.fn.DataTable.isDataTable('#sales-order-table')) {
+      $('#sales-order-table').DataTable().destroy();
+    }
+    $('#sales-order-table').DataTable();
+  });
+}
+
+// Load purchase data
+function loadPurchaseData() {
+  callGoogleScript('getPurchaseData', [currentCompany], function(data) {
+    const purchaseTable = $('#purchase-table tbody');
+    purchaseTable.empty();
+    data.forEach(function(row) {
+      purchaseTable.append(`
+        <tr>
+          <td>${new Date(row[1]).toLocaleDateString()}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>${row[6]}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="updateStatus('${row[2]}', 'purchase')">Update Status</button>
+          </td>
+        </tr>
+      `);
+    });
+    
+    // Initialize DataTable
+    if ($.fn.DataTable.isDataTable('#purchase-table')) {
+      $('#purchase-table').DataTable().destroy();
+    }
+    $('#purchase-table').DataTable();
+  });
+}
+
+// Load forecast data
+function loadForecastData() {
+  callGoogleScript('getForecastData', [currentCompany], function(data) {
+    const forecastTable = $('#forecast-table tbody');
+    forecastTable.empty();
+    data.forEach(function(item) {
+      forecastTable.append(`
+        <tr>
+          <td>${item.itemId}</td>
+          <td>${item.itemName}</td>
+          <td>${item.currentStock}</td>
+          <td>${item.avgStockOutPerMonth.toFixed(2)}</td>
+          <td>${item.daysUntilStockOut === Infinity ? 'N/A' : item.daysUntilStockOut}</td>
+          <td>
+            ${item.daysUntilStockOut <= 7 ? '<span class="badge badge-danger">Critical</span>' : 
+              item.daysUntilStockOut <= 30 ? '<span class="badge badge-warning">Warning</span>' : 
+              '<span class="badge badge-success">Normal</span>'}
+          </td>
+        </tr>
+      `);
+    });
+    
+    // Initialize DataTable
+    if ($.fn.DataTable.isDataTable('#forecast-table')) {
+      $('#forecast-table').DataTable().destroy();
+    }
+    $('#forecast-table').DataTable();
+  });
+}
+
+// Load settings data
+function loadSettingsData() {
+  callGoogleScript('getSettingsData', [], function(data) {
+    data.forEach(function(setting) {
+      if (setting[0] === 'orderNotification') {
+        $('#order-notification').prop('checked', setting[1]);
+      } else if (setting[0] === 'stockNotification') {
+        $('#stock-notification').prop('checked', setting[1]);
+      } else if (setting[0] === 'lowStockNotification') {
+        $('#low-stock-notification').prop('checked', setting[1]);
+      } else if (setting[0] === 'lowStockThreshold') {
+        $('#low-stock-threshold').val(setting[1]);
+      } else if (setting[0] === 'currency') {
+        $('#currency').val(setting[1]);
+      }
+    });
+  });
+}
+
+// Load user data
+function loadUserData() {
+  callGoogleScript('getUserData', [], function(data) {
+    const usersTable = $('#users-table tbody');
+    usersTable.empty();
+    data.forEach(function(row) {
+      usersTable.append(`
+        <tr>
+          <td>${row[0]}</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="deleteUser('${row[0]}')">Delete</button>
+          </td>
+        </tr>
+      `);
+    });
+    
+    // Initialize DataTable
+    if ($.fn.DataTable.isDataTable('#users-table')) {
+      $('#users-table').DataTable().destroy();
+    }
+    $('#users-table').DataTable();
+  });
+}
+
+// Add inventory item
+function addInventoryItem() {
+  $('#add-item-modal').modal('show');
+}
+
+// Add stock out entry
+function addStockOutEntry() {
+  $('#add-stock-out-modal').modal('show');
+}
+
+// Add sales order
+function addSalesOrder() {
+  $('#add-sales-order-modal').modal('show');
+}
+
+// Add purchase entry
+function addPurchaseEntry() {
+  $('#add-purchase-modal').modal('show');
+}
+
+// Add user
+function addUser() {
+  $('#add-user-modal').modal('show');
+}
+
+// Update status
+function updateStatus(orderId, orderType) {
+  $('#update-order-id').val(orderId);
+  $('#update-order-type').val(orderType);
+  $('#update-status-modal').modal('show');
+}
+
+// Delete user
+function deleteUser(username) {
+  if (confirm('Are you sure you want to delete this user?')) {
+    callGoogleScript('deleteUser', [username], function(result) {
+      alert(result);
+      loadUserData();
+    });
+  }
+}
+
+// Test connection to Google Apps Script
+function testConnection() {
+  $('#login-message').html('<div class="alert alert-info">Testing connection...</div>');
+  
+  callGoogleScript('testFunction', [], function(result) {
+    if (result.message) {
+      $('#login-message').html('<div class="alert alert-success">Connection successful: ' + result.message + '</div>');
+    } else {
+      $('#login-message').html('<div class="alert alert-danger">Connection test failed</div>');
+    }
+  });
 }
 
 // Function to call Google Script using JSONP
