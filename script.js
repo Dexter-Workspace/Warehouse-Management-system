@@ -273,6 +273,18 @@ function switchCompany(company) {
 // Load dashboard data
 function loadDashboard() {
   callGoogleScript('getDashboardData', [currentCompany], function(data) {
+    if (data.error) {
+      console.error('Error loading dashboard data:', data.error);
+      $('#inventory-value').text('0.00');
+      $('#stock-out-value').text('0');
+      $('#sales-orders-value').text('0');
+      $('#purchase-orders-value').text('0');
+      
+      // Show error message
+      $('#recent-activities').html('<div class="alert alert-danger">Error loading dashboard data: ' + data.error + '</div>');
+      return;
+    }
+    
     $('#inventory-value').text(data.inventoryValue.toFixed(2));
     $('#stock-out-value').text(data.totalStockOut);
     $('#sales-orders-value').text(data.pendingSalesOrders);
@@ -284,6 +296,11 @@ function loadDashboard() {
     
     // Load recent activities
     callGoogleScript('getRecentActivities', [currentCompany], function(activities) {
+      if (activities.length === 0) {
+        $('#recent-activities').html('<div class="alert alert-info">No recent activities found.</div>');
+        return;
+      }
+      
       const activitiesHtml = activities.map(activity => `
         <div class="activity-item">
           <small class="text-muted">${new Date(activity.timestamp).toLocaleString()}</small>
@@ -296,10 +313,18 @@ function loadDashboard() {
   });
 }
 
+
 // Load stock chart
 function loadStockChart() {
   const ctx = document.getElementById('stock-chart').getContext('2d');
-  new Chart(ctx, {
+  
+  // Destroy existing chart instance if it exists
+  if (window.stockChartInstance) {
+    window.stockChartInstance.destroy();
+  }
+  
+  // Create new chart instance
+  window.stockChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -330,7 +355,14 @@ function loadStockChart() {
 // Load inventory chart
 function loadInventoryChart() {
   const ctx = document.getElementById('inventory-chart').getContext('2d');
-  new Chart(ctx, {
+  
+  // Destroy existing chart instance if it exists
+  if (window.inventoryChartInstance) {
+    window.inventoryChartInstance.destroy();
+  }
+  
+  // Create new chart instance
+  window.inventoryChartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels: ['In Stock', 'Low Stock', 'Out of Stock'],
@@ -346,6 +378,7 @@ function loadInventoryChart() {
     options: {}
   });
 }
+
 
 // Load inventory data
 function loadInventoryData() {
