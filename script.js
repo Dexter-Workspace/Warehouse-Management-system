@@ -66,76 +66,63 @@ function showMainContainer() {
   }
 }
 
-// Function to call Google Script
+// Function to call Google Script using fetch
 function callGoogleScript(functionName, params, callback) {
   console.log('Calling Google Script:', functionName, params);
   
-  // Create a form element
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = WEB_APP_URL;
-  form.target = 'hidden-iframe';
+  // Create a form data object
+  const formData = new FormData();
+  formData.append('function', functionName);
+  formData.append('params', JSON.stringify(params));
   
-  // Create a hidden input for the function name
-  const functionInput = document.createElement('input');
-  functionInput.type = 'hidden';
-  functionInput.name = 'function';
-  functionInput.value = functionName;
-  form.appendChild(functionInput);
-  
-  // Create a hidden input for the parameters
-  const paramsInput = document.createElement('input');
-  paramsInput.type = 'hidden';
-  paramsInput.name = 'params';
-  paramsInput.value = JSON.stringify(params);
-  form.appendChild(paramsInput);
-  
-  // Create a hidden iframe to handle the response
-  let iframe = document.getElementById('hidden-iframe');
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.id = 'hidden-iframe';
-    iframe.style.display = 'none';
-    iframe.name = 'hidden-iframe';
-    document.body.appendChild(iframe);
+  // Show loading message if it's a login request
+  if (functionName === 'authenticateUser') {
+    $('#login-message').html('<div class="alert alert-info">Processing request...</div>');
   }
   
-  // Handle the response using postMessage
-  const messageHandler = function(event) {
-    // Check if the message is from the iframe
-    if (event.origin === 'https://script.google.com' && event.source === iframe.contentWindow) {
-      try {
-        const response = JSON.parse(event.data);
-        console.log('Response from Google Script:', response);
-        
-        if (response.error) {
-          console.error('Error from Google Script:', response.error);
-          alert('Error: ' + response.error);
+  // Send the request
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    body: formData,
+    mode: 'cors'
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.text();
+  })
+  .then(data => {
+    console.log('Response from Google Script:', data);
+    
+    try {
+      const parsedData = JSON.parse(data);
+      
+      if (parsedData.error) {
+        console.error('Error from Google Script:', parsedData.error);
+        if (functionName === 'authenticateUser') {
+          $('#login-message').html('<div class="alert alert-danger">Error: ' + parsedData.error + '</div>');
         } else {
-          callback(response);
+          alert('Error: ' + parsedData.error);
         }
-      } catch (error) {
-        console.error('Error parsing response:', error);
+      } else {
+        callback(parsedData);
+      }
+    } catch (error) {
+      console.error('Error parsing response:', error);
+      if (functionName === 'authenticateUser') {
+        $('#login-message').html('<div class="alert alert-danger">An error occurred. Please try again.</div>');
+      } else {
         alert('An error occurred. Please try again.');
       }
-      
-      // Remove the event listener
-      window.removeEventListener('message', messageHandler);
     }
-  };
-  
-  // Add the event listener
-  window.addEventListener('message', messageHandler, false);
-  
-  // Submit the form
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-  
-  // Set a timeout in case we don't get a response
-  setTimeout(function() {
-    window.removeEventListener('message', messageHandler);
-    console.warn('No response received from Google Script');
-    $('#login-message').html('<div class="alert alert-warning">No response from server. Please try again.</div>');
-  }, 15000); // 15 seconds timeout
+  })
+  .catch(error => {
+    console.error('Fetch error:', error);
+    if (functionName === 'authenticateUser') {
+      $('#login-message').html('<div class="alert alert-danger">Network error. Please check your connection and try again.</div>');
+    } else {
+      alert('Network error. Please check your connection and try again.');
+    }
+  });
 }
