@@ -126,3 +126,14 @@ function callGoogleScript(functionName, params, callback) {
     }
   });
 }
+function testConnection() {
+  $('#login-message').html('<div class="alert alert-info">Testing connection...</div>');
+  
+  callGoogleScript('testFunction', [], function(result) {
+    if (result.message) {
+      $('#login-message').html('<div class="alert alert-success">Connection successful: ' + result.message + '</div>');
+    } else {
+      $('#login-message').html('<div class="alert alert-danger">Connection test failed</div>');
+    }
+  });
+}
