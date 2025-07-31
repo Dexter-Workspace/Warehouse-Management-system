@@ -94,87 +94,103 @@ $(document).ready(function() {
     loadUserData();
   });
 
-  // Add item form submission
-  $('#add-item-form').submit(function(e) {
-    e.preventDefault();
-    const itemId = $('#item-id').val();
-    const itemName = $('#item-name').val();
-    const quantity = parseInt($('#item-quantity').val());
-    const unitPrice = parseFloat($('#item-price').val());
-    
-    callGoogleScript('addInventoryItem', [currentCompany, itemId, itemName, quantity, unitPrice], function(result) {
-      alert(result);
-      $('#add-item-modal').modal('hide');
-      $('#add-item-form')[0].reset();
-      loadInventoryData();
-    });
+// Add item form submission
+$('#add-item-form').submit(function(e) {
+  e.preventDefault();
+  const itemId = $('#item-id').val();
+  const itemName = $('#item-name').val();
+  const quantity = parseInt($('#item-quantity').val());
+  const unitPrice = parseFloat($('#item-price').val());
+  
+  // Create a properly formatted array
+  const itemData = [currentCompany, itemId, itemName, quantity, unitPrice];
+  
+  callGoogleScript('addInventoryItem', itemData, function(result) {
+    alert(result);
+    $('#add-item-modal').modal('hide');
+    $('#add-item-form')[0].reset();
+    loadInventoryData();
   });
+});
 
   // Add stock out form submission
-  $('#add-stock-out-form').submit(function(e) {
-    e.preventDefault();
-    const orderId = $('#stock-out-order-id').val();
-    const customer = $('#stock-out-customer').val();
-    const quantity = parseInt($('#stock-out-quantity').val());
-    const status = $('#stock-out-status').val();
-    
-    callGoogleScript('addStockOutEntry', [currentCompany, orderId, customer, quantity, status], function(result) {
-      alert(result);
-      $('#add-stock-out-modal').modal('hide');
-      $('#add-stock-out-form')[0].reset();
-      loadStockOutData();
-    });
+$('#add-stock-out-form').submit(function(e) {
+  e.preventDefault();
+  const orderId = $('#stock-out-order-id').val();
+  const customer = $('#stock-out-customer').val();
+  const quantity = parseInt($('#stock-out-quantity').val());
+  const status = $('#stock-out-status').val();
+  
+  // Create a properly formatted array
+  const stockOutData = [currentCompany, orderId, customer, quantity, status];
+  
+  callGoogleScript('addStockOutEntry', stockOutData, function(result) {
+    alert(result);
+    $('#add-stock-out-modal').modal('hide');
+    $('#add-stock-out-form')[0].reset();
+    loadStockOutData();
   });
+});
 
-  // Add sales order form submission
-  $('#add-sales-order-form').submit(function(e) {
-    e.preventDefault();
-    const orderId = $('#sales-order-order-id').val();
-    const customer = $('#sales-order-customer').val();
-    const items = $('#sales-order-items').val();
-    const totalAmount = parseFloat($('#sales-order-amount').val());
-    const status = $('#sales-order-status').val();
-    
-    callGoogleScript('addSalesOrder', [currentCompany, orderId, customer, items, totalAmount, status], function(result) {
-      alert(result);
-      $('#add-sales-order-modal').modal('hide');
-      $('#add-sales-order-form')[0].reset();
-      loadSalesOrderData();
-    });
+// Add sales order form submission
+$('#add-sales-order-form').submit(function(e) {
+  e.preventDefault();
+  const orderId = $('#sales-order-order-id').val();
+  const customer = $('#sales-order-customer').val();
+  const items = $('#sales-order-items').val();
+  const totalAmount = parseFloat($('#sales-order-amount').val());
+  const status = $('#sales-order-status').val();
+  
+  // Create a properly formatted array
+  const salesOrderData = [currentCompany, orderId, customer, items, totalAmount, status];
+  
+  callGoogleScript('addSalesOrder', salesOrderData, function(result) {
+    alert(result);
+    $('#add-sales-order-modal').modal('hide');
+    $('#add-sales-order-form')[0].reset();
+    loadSalesOrderData();
   });
+});
 
-  // Add purchase form submission
-  $('#add-purchase-form').submit(function(e) {
-    e.preventDefault();
-    const orderId = $('#purchase-order-id').val();
-    const supplier = $('#purchase-supplier').val();
-    const items = $('#purchase-items').val();
-    const totalAmount = parseFloat($('#purchase-amount').val());
-    const status = $('#purchase-status').val();
-    
-    callGoogleScript('addPurchaseEntry', [currentCompany, orderId, supplier, items, totalAmount, status], function(result) {
-      alert(result);
-      $('#add-purchase-modal').modal('hide');
-      $('#add-purchase-form')[0].reset();
-      loadPurchaseData();
-    });
+// Add purchase form submission
+$('#add-purchase-form').submit(function(e) {
+  e.preventDefault();
+  const orderId = $('#purchase-order-id').val();
+  const supplier = $('#purchase-supplier').val();
+  const items = $('#purchase-items').val();
+  const totalAmount = parseFloat($('#purchase-amount').val());
+  const status = $('#purchase-status').val();
+  
+  // Create a properly formatted array
+  const purchaseData = [currentCompany, orderId, supplier, items, totalAmount, status];
+  
+  callGoogleScript('addPurchaseEntry', purchaseData, function(result) {
+    alert(result);
+    $('#add-purchase-modal').modal('hide');
+    $('#add-purchase-form')[0].reset();
+    loadPurchaseData();
   });
+});
 
-  // Add user form submission
-  $('#add-user-form').submit(function(e) {
-    e.preventDefault();
-    const username = $('#add-user-username').val();
-    const email = $('#add-user-email').val();
-    const role = $('#add-user-role').val();
-    const password = $('#add-user-password').val();
-    
-    callGoogleScript('addUser', [username, email, role, password], function(result) {
-      alert(result);
-      $('#add-user-modal').modal('hide');
-      $('#add-user-form')[0].reset();
-      loadUserData();
-    });
+// Add user form submission
+$('#add-user-form').submit(function(e) {
+  e.preventDefault();
+  const username = $('#add-user-username').val();
+  const email = $('#add-user-email').val();
+  const role = $('#add-user-role').val();
+  const password = $('#add-user-password').val();
+  
+  // Create a properly formatted array
+  const userData = [username, email, role, password];
+  
+  callGoogleScript('addUser', userData, function(result) {
+    alert(result);
+    $('#add-user-modal').modal('hide');
+    $('#add-user-form')[0].reset();
+    loadUserData();
   });
+});
+
 
   // Update status form submission
   $('#update-status-form').submit(function(e) {
@@ -652,7 +668,7 @@ function callGoogleScript(functionName, params, callback) {
     document.body.removeChild(script);
   };
   
-  // Build the URL
+  // Build the URL with properly encoded parameters
   const url = WEB_APP_URL + '?function=' + encodeURIComponent(functionName) + 
                '&params=' + encodeURIComponent(JSON.stringify(params)) + 
                '&callback=' + encodeURIComponent(callbackName);
@@ -677,3 +693,4 @@ function callGoogleScript(functionName, params, callback) {
     }
   }, 15000); // 15 seconds timeout
 }
+
